@@ -3,20 +3,18 @@ const fs = require('fs');
 const transpiler = require('./lib/transpiler');
 const fileHelper = require('./lib/fileHelper');
  
-var entries = [];
-
-const watch = (sourcePath, distPath, bundle, minify, live) =>
+const transpile = (sourcePath, outputPath, minify, watch) =>
 {
   if (!fs.existsSync(sourcePath)){
     console.log(`can't find source directory/file : ${sourcePath}`);
     return;
   } 
 
-  fileHelper.makeDirectory(distPath);
+  fileHelper.makeDirectory(outputPath);
 
   let sourceFiles = [];
   let sourceIsDir = fileHelper.isDirectory(sourcePath);
-  let destinationIsDir = fileHelper.isDirectory(distPath);
+  let destinationIsDir = fileHelper.isDirectory(outputPath);
 
 
   if(sourceIsDir){
@@ -24,22 +22,22 @@ const watch = (sourcePath, distPath, bundle, minify, live) =>
     sourceFiles = fileHelper.filterOutTestFiles(sourceFiles);
     if(destinationIsDir){
       sourceFiles.forEach(file => {
-        let distFile = fileHelper.createDestinationFullFileName(distPath, file);
+        let distFile = fileHelper.createDestinationFullFileName(outputPath, file);
         transpiler.transpile([].concat(file), distFile, minify, live);
       });
     }
     else{
-      transpiler.transpile(sourceFiles, distPath, minify, live);
+      transpiler.transpile(sourceFiles, outputPath, minify, live);
     }
   }
   else{
-    let distFile = distPath;
+    let distFile = outputPath;
       if(destinationIsDir)
-        distFile = fileHelper.createDestinationFullFileName(distPath, sourcePath);
+        distFile = fileHelper.createDestinationFullFileName(outputPath, sourcePath);
     transpiler.transpile([].concat(sourcePath), distFile, minify, live);
   }
 }
 
 module.exports = {
-  watch
+  transpile
 };
