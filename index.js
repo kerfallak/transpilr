@@ -3,39 +3,38 @@ const fs = require('fs');
 const transpiler = require('./lib/transpiler');
 const fileHelper = require('./lib/fileHelper');
  
-const transpile = (sourcePath, outputPath, minify, watch) =>
+const transpile = (sourcesPaths, outputPath, minify, watch) =>
 {
-  if (!fs.existsSync(sourcePath)){
-    console.log(`can't find source directory/file : ${sourcePath}`);
-    return;
-  } 
+   let sourceFiles = getSourceFiles(sourcesPaths);
 
-  fileHelper.makeDirectory(outputPath);
+   fileHelper.makeDirectory(outputPath);
 
+   if(fileHelper.isDirectory(outputPath)){
+     sourceFiles.forEach(sourcefileName => {
+       let outputFile = fileHelper.createFullOutPutFileName(outputPath, sourcefileName);
+       transpiler.transpile([].concat(sourcefileName), outputFile, minify, watch);
+     });
+   }
+   else{
+     transpiler.transpile(sourceFiles, outputPath, minify, watch);
+   }
+}
+
+function getSourceFiles(sourcesPaths){
   let sourceFiles = [];
-  let sourceIsDir = fileHelper.isDirectory(sourcePath);
-  let destinationIsDir = fileHelper.isDirectory(outputPath);
 
+  sourcesPaths.forEach(sourcePath=>{
+   if (!fs.existsSync(sourcePath)){
+     console.log(`can't find source directory/file : ${sourcePath}`);
+     return;
+   } 
+    if(fileHelper.isDirectory(sourcePath))
+     sourceFiles = sourceFiles.concat(fileHelper.findJSFiles(sourcePath));
+    else
+     sourceFiles = sourceFiles.concat(sourcePath);
+  });
 
-  if(sourceIsDir){
-    sourceFiles = sourceFiles.concat(fileHelper.findJSFiles(sourcePath));
-    sourceFiles = fileHelper.filterOutTestFiles(sourceFiles);
-    if(destinationIsDir){
-      sourceFiles.forEach(file => {
-        let distFile = fileHelper.createDestinationFullFileName(outputPath, file);
-        transpiler.transpile([].concat(file), distFile, minify, live);
-      });
-    }
-    else{
-      transpiler.transpile(sourceFiles, outputPath, minify, live);
-    }
-  }
-  else{
-    let distFile = outputPath;
-      if(destinationIsDir)
-        distFile = fileHelper.createDestinationFullFileName(outputPath, sourcePath);
-    transpiler.transpile([].concat(sourcePath), distFile, minify, live);
-  }
+  return fileHelper.filterOutTestFiles(sourceFiles);
 }
 
 module.exports = {

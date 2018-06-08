@@ -2,12 +2,12 @@
 const yargs = require('yargs');
 const transpilr = require('../index');
 
-const argv = yargs.command('$0 <source>',
+const argv = yargs.command('$0 <source..>',
  'Observe file/directory and transpile on save', 
 {
     source:{
         alias:'s',
-        describe: 'Source directory/file path'
+        describe: 'Source directory/file path. This parameter accept multiple values'
     },
     output:{
         alias:'o',
