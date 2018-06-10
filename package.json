@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/**/*.spec.js"
   },
   "browserify": {
     "transform": [
@@ -46,6 +46,9 @@
     "transpilr": "bin/cmd.js"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "expect": "^23.1.0",
+    "mocha": "^5.2.0",
+    "mock-fs": "^4.5.0",
+    "sinon": "^5.1.1"
   }
 }
