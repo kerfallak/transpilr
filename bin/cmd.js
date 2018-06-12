@@ -27,12 +27,40 @@ const argv = yargs.command('$0 <source..>',
             describe: 'watch and auto-transpile on every source update',
             type: 'boolean',
             default: false
+        },
+        loud: {
+            alias: 'l',
+            describe: 'log successful activities to the console (verbose)',
+            type: 'boolean',
+            default: false
+        },
+        all: {
+            alias: 'a',
+            describe: 'include every javascript files, including test files',
+            type: 'boolean',
+            default: false
         }
     },
-    function (argv) {
-        transpilr.transpile(argv.source, argv.output, argv.minify, argv.watch);
-    }
+    commandHandler
 )
-    .help("h")
-    .alias("h", "help")
-    .argv;
+.help("h")
+.alias("h", "help")
+.argv;
+
+function commandHandler(argv) {
+    transpilr.transpile(adaptToTranspilerOptions(argv), (options) => {
+        if (argv.loud)
+            console.log(`${options.sourceFiles} -> ${options.outputFile}`);
+    });
+}
+
+function adaptToTranspilerOptions(argv){
+    return {
+        sourcesPaths: argv.source,
+        outputPath: argv.output,
+        minify: argv.minify,
+        watch: argv.watch,
+        all: argv.all
+    };
+}
+

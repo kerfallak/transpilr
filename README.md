@@ -31,7 +31,15 @@ transpilr is simple to use and you will only ever need to call one function.
 ``` javascript
 const transpilr = require('transpilr');
 
-transpilr.transpile(sourcePaths, outputPath, minify, watch);
+let options = {
+    sourcesPaths: ['inputFile.js'],
+    outputPath: 'inputFile.js',
+    minify: false,
+    watch: false,
+    all: true
+}
+
+transpilr.transpile(options);
 
 ```
 
@@ -41,6 +49,7 @@ transpilr.transpile(sourcePaths, outputPath, minify, watch);
 * **outputPath**: string value to provide output directory/file path
 * **Minify**: boolean value to indicate that the output should be minify
 * **Watch**: boolean value to indicate that the output should be updated on every single change and save of the source files
+* **all**: boolean value to indicate that all javascript files including spec/test files should be transpiled
 
 ## Authors
 

@@ -36,9 +36,16 @@ describe('transpiler', () => {
 
     describe('createTranspilerEntries', () => {
 
-        describe('given source : [fake/dir, fake/dir2], output: dist, minify: false ', () => {
+        describe('given source : [fake/dir, fake/dir2], output: dist, minify: false, all: false ', () => {
             let act = () => {
-                return transpiler.createTranspilerEntries(['fake/dir', 'fake/dir2'], 'dist', false, false);
+                let options = {
+                    sourcesPaths: ['fake/dir', 'fake/dir2'],
+                    outputPath: 'dist',
+                    minify: false,
+                    watch: false,
+                    all: false
+                }
+                return transpiler.createTranspilerEntries(options);
             };
             it('should return 4 entries', () => {
                 let mkdirStubs = sinon.stub(shell, 'mkdir');
@@ -81,9 +88,16 @@ describe('transpiler', () => {
             });
         });
 
-        describe('given source : [fake/dir, fake/dir2], output: output.js, minify: false ', () => {
+        describe('given source : [fake/dir, fake/dir2], output: output.js, minify: false, all: false ', () => {
             let act = () => {
-                return transpiler.createTranspilerEntries(['fake/dir', 'fake/dir2'], 'output.js', false, false);
+                let options = {
+                    sourcesPaths: ['fake/dir', 'fake/dir2'],
+                    outputPath: 'output.js',
+                    minify: false,
+                    watch: false,
+                    all: false
+                }
+                return transpiler.createTranspilerEntries(options);
             };
             it('should return 1 entry', () => {
                 let mkdirStubs = sinon.stub(shell, 'mkdir');
@@ -108,9 +122,16 @@ describe('transpiler', () => {
             });
         });
 
-        describe('given source : [fake/dir2], output: dist, minify: true ', () => {
+        describe('given source : [fake/dir2], output: dist, minify: true, all: false ', () => {
             let act = () => {
-                return transpiler.createTranspilerEntries(['fake/dir2'], 'dist', true, false);
+                let options = {
+                    sourcesPaths: ['fake/dir2'],
+                    outputPath: 'dist',
+                    minify: true,
+                    watch: true,
+                    all: false
+                }
+                return transpiler.createTranspilerEntries(options);
             };
             it('should return 1 entry', () => {
                 let mkdirStubs = sinon.stub(shell, 'mkdir');
@@ -127,7 +148,7 @@ describe('transpiler', () => {
                     sourceFiles: ['fake\\dir2\\myJavascriptFile4.js'],
                     outputFile: 'dist\\myJavascriptFile4.min.js',
                     minify: true,
-                    watch: false
+                    watch: true
                 }
                 ];
 
@@ -135,5 +156,44 @@ describe('transpiler', () => {
             });
         });
 
+        describe('given source : [fake/dir2], output: dist, minify: false, all: true ', () => {
+            let act = () => {
+                let options = {
+                    sourcesPaths: ['fake/dir2'],
+                    outputPath: 'dist',
+                    minify: false,
+                    watch: false,
+                    all: true
+                }
+                return transpiler.createTranspilerEntries(options);
+            };
+            it('should return 2 entries', () => {
+                let mkdirStubs = sinon.stub(shell, 'mkdir');
+                let result = act();
+                mkdirStubs.restore();
+                expect(result.length).to.be.equal(2);
+            });
+            it('should return correct entries including spec/test files', () => {
+                let mkdirStubs = sinon.stub(shell, 'mkdir');
+                let result = act();
+                mkdirStubs.restore();
+
+                let expectedEntries = [{
+                    sourceFiles: ['fake\\dir2\\myJavascriptFile4.js'],
+                    outputFile: 'dist\\myJavascriptFile4.js',
+                    minify: false,
+                    watch: false
+                },
+                {
+                    sourceFiles: ['fake\\dir2\\myTestFile4.spec.js'],
+                    outputFile: 'dist\\myTestFile4.spec.js',
+                    minify: false,
+                    watch: false
+                }
+                ];
+
+                expect(result).to.deep.include.members(expectedEntries);
+            });
+        });
     });
 });
