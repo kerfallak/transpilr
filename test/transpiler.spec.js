@@ -196,4 +196,126 @@ describe('transpiler', () => {
             });
         });
     });
+
+    describe('createBrowserifyInstance', ()=>{
+        it('should return empty plugin watch: false', ()=>{
+            let options = {
+                watch: false,
+                sourceFiles: ['test1.js', 'demo/test2.js'],
+                minify: false
+            };
+            let result = transpiler.createBrowserifyInstance(options);
+           expect(result._options.plugin).to.be.empty;
+
+        });
+
+        it('should return correct sources given source array', ()=>{
+            let options = {
+                watch: false,
+                sourceFiles: ['file.js'],
+                minify: false
+            };
+            let result = transpiler.createBrowserifyInstance(options);
+           expect(result._options.entries).to.be.eql(['file.js']);
+        });
+        it('should return plugin with array of 1 given watch: true', ()=>{
+            let options = {
+                watch: true,
+                sourceFiles: ['file.js'],
+                minify: false
+            };
+            let result = transpiler.createBrowserifyInstance(options);
+           expect(result._options.plugin.length).to.be.equal(1);
+        });
+        it('should return result that includes callback as property', ()=>{
+            let options = {
+                watch: false,
+                sourceFiles: ['file.js'],
+                minify: false
+            };
+            let callback = ()=>{return 'me'};
+            let result = transpiler.createBrowserifyInstance(options, callback);
+           expect(result.callback).to.be.eql(callback);
+        });
+    });
+
+    describe('setAndExecuteBundlingEvent', ()=>{
+        it('should call transform given minify is true', ()=>{
+            const browserifyObject = browserify({});
+            const transformStub = sinon.stub(browserifyObject, 'transform');
+
+            transpiler.setAndExecuteBundlingEvent({watch: false, minify: true, outputFile: 'test.js'}, browserifyObject);
+            transformStub.restore();
+
+            sinon.assert.calledWith(transformStub, 'uglifyify', { global: true });
+        });
+        it('should not call transform given minify is false', ()=>{
+            const browserifyObject = browserify({});
+            const transformStub = sinon.stub(browserifyObject, 'transform');
+
+            transpiler.setAndExecuteBundlingEvent({watch: false, minify: false, outputFile: 'test.js'}, browserifyObject);
+            transformStub.restore();
+
+            sinon.assert.notCalled(transformStub);
+        });
+        it('should set up on update even given watch is true', ()=>{
+            const browserifyObject = browserify({});
+            const onStub = sinon.stub(browserifyObject, 'on');
+
+            transpiler.setAndExecuteBundlingEvent({watch: true, minify: false, outputFile: 'test.js'}, browserifyObject);
+            onStub.restore();
+
+            sinon.assert.calledOnce(onStub);
+        });
+        it('should not set up on update even given watch is false', ()=>{
+            const browserifyObject = browserify({});
+            const onStub = sinon.stub(browserifyObject, 'on');
+
+            transpiler.setAndExecuteBundlingEvent({watch: false, minify: false, outputFile: 'test.js'}, browserifyObject);
+            onStub.restore();
+
+            sinon.assert.notCalled(onStub);
+        });
+        it('should call the callback given that browserifyObject has one', ()=>{
+            const browserifyObject = browserify({});
+            let callback = sinon.spy();
+            browserifyObject['callback'] = callback;
+
+            transpiler.setAndExecuteBundlingEvent({watch: false, minify: false, outputFile: 'test.js'}, browserifyObject);
+
+            sinon.assert.calledOnce(callback);
+        });
+    });
+
+    describe('createBrowserifyOptions', ()=>{
+        it('should include watchify given watch: true', ()=>{
+            let result = transpiler.createBrowserifyOptions({
+                watch: true,
+                sourceFiles: ['test1.js', 'demo/test2.js'],
+
+            });
+
+            expect(result).to.be.eql({
+                entries: ['test1.js', 'demo/test2.js'],
+                cache: {},
+                packageCache: {},
+                plugin: [].concat(watchify)
+            });
+        });
+
+        it('should not include watchify given watch: false', ()=>{
+            let result = transpiler.createBrowserifyOptions({
+                watch: false,
+                sourceFiles: ['test1.js', 'demo/test2.js'],
+
+            });
+
+            expect(result).to.be.eql({
+                entries: ['test1.js', 'demo/test2.js'],
+                cache: {},
+                packageCache: {},
+                plugin: []
+            });
+        });
+    });
 });
