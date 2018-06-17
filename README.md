@@ -69,12 +69,12 @@ transpilr <sources..> -o <output> [-w] [-m] [-a] [-l]
 ```
 Command Parameters:
 
-* sources : ~*required*~ should be listed right after the command keyword **transpilr** . It takes single or multiple file/direcotry path(s) separated with a space
-* output : ~*required*~ takes the output file/directory path. note that this value has to always be preceded by the flag **-o**
-* -w : ~*optional*~ flag to watch source and update output on change.
-* -m : ~*optional*~ flag to minify output
-* -a : ~*optional*~ flag to transpile all javascript file in source file/directory. by default spec/test files are ignored
-* -l : ~*optional*~ flag to turn on loud process that outputs results on the terminal.
+* sources : ~ *required* ~ should be listed right after the command keyword **transpilr** . It takes single or multiple file/direcotry path(s) separated with a space
+* output : ~ *required* ~ takes the output file/directory path. note that this value has to always be preceded by the flag **-o**
+* -w : ~ *optional* ~ flag to watch source and update output on change.
+* -m : ~ *optional* ~ flag to minify output
+* -a : ~ *optional* ~ flag to transpile all javascript file in source file/directory. by default spec/test files are ignored
+* -l : ~ *optional* ~ flag to turn on loud process that outputs results on the terminal.
 
 examples:
 
