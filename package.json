@@ -1,7 +1,7 @@
 {
   "name": "transpilr-js",
   "version": "1.0.0",
-  "description": "",
+  "description": "transpile, watch, bundle and minify new javascript versions (es6 and newer) to older version es5",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/**/*.spec.js"
@@ -24,11 +24,10 @@
     "Transpiler",
     "es5",
     "es6",
-    "Babel",
-    "Browserify",
-    "Watchify",
-    "Folder",
-    "Directory"
+    "es2015",
+    "watch",
+    "bundle",
+    "minify"
   ],
   "author": "Kerfalla Kourouma <kk_mat@hotmail.com>",
   "license": "ISC",

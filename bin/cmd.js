@@ -3,7 +3,7 @@ const yargs = require('yargs');
 const transpilr = require('../index');
 
 const argv = yargs.command('$0 <source..>',
-    'Observe file/directory and transpile on save',
+    'transpile, watch, bundle and minify new javascript versions (es6 and newer) to older version es5',
     {
         source: {
             alias: 's',
@@ -45,6 +45,12 @@ const argv = yargs.command('$0 <source..>',
 )
 .help("h")
 .alias("h", "help")
+.parse("", (err, argv, output) => {
+    if (output) {
+      const newOutput = output.replace("cmd.js <source..>", "transpilr <source..>");
+      console.log(newOutput);
+    }
+  })
 .argv;
 
 function commandHandler(argv) {
@@ -63,4 +69,3 @@ function adaptToTranspilerOptions(argv){
         all: argv.all
     };
 }
-
