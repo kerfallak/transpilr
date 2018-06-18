@@ -36,7 +36,7 @@ const transpilr = require('transpilr');
 //transpiler configurations
 let options = {
     sourcesPaths: ['inputFile.js'],
-    outputPath: 'inputFile.js',
+    outputPath: 'outputFile.js',
     minify: false,
     watch: false,
     all: true
@@ -72,7 +72,7 @@ Command Parameters:
 * sources : ~ *required* ~ should be listed right after the command keyword **transpilr** . It takes single or multiple file/direcotry path(s) separated with a space
 * output : ~ *required* ~ takes the output file/directory path. note that this value has to always be preceded by the flag **-o**
 * -w : ~ *optional* ~ flag to watch source and update output on change.
-* -m : ~ *optional* ~ flag to minify output
+* -m : ~ *optional* ~ flag to minify output. note that .min.js will be added to the output file name.
 * -a : ~ *optional* ~ flag to transpile all javascript file in source file/directory. by default spec/test files are ignored
 * -l : ~ *optional* ~ flag to turn on loud process that outputs results on the terminal.
 

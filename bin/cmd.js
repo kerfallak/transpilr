@@ -3,54 +3,47 @@ const yargs = require('yargs');
 const transpilr = require('../index');
 
 const argv = yargs.command('$0 <source..>',
-    'transpile, watch, bundle and minify new javascript versions (es6 and newer) to older version es5',
-    {
-        source: {
-            alias: 's',
-            describe: 'Source directory/file path. This parameter accept multiple values'
-        },
-        output: {
+    'transpile, watch, bundle and minify new javascript versions (es6 and newer) to older version es5',    
+        (yargs) => yargs.positional('source', {
+            describe: 'Source directory/file paths. Accepts multiple values separated with space'
+        })
+        .option('output', {
             alias: 'o',
-            describe: 'output directory/file path',
+            describe: 'output directory/file path. precede value with the flag -o',
             demandOption: true,
             type: 'string'
-        },
-        minify: {
+        })
+        .option('minify', {
             alias: 'm',
             describe: 'turn on/off minification',
             type: 'boolean',
             default: false
 
-        },
-        watch: {
+        })
+        .option('watch', {
             alias: 'w',
             describe: 'watch and auto-transpile on every source update',
             type: 'boolean',
             default: false
-        },
-        loud: {
+        })
+        .option('loud', {
             alias: 'l',
             describe: 'log successful activities to the console (verbose)',
             type: 'boolean',
             default: false
-        },
-        all: {
+        })
+        .option('all', {
             alias: 'a',
             describe: 'include every javascript files, including test files',
             type: 'boolean',
             default: false
         }
-    },
+    ),
     commandHandler
 )
 .help("h")
 .alias("h", "help")
-.parse("", (err, argv, output) => {
-    if (output) {
-      const newOutput = output.replace("cmd.js <source..>", "transpilr <source..>");
-      console.log(newOutput);
-    }
-  })
+.alias("v", "version")
 .argv;
 
 function commandHandler(argv) {
