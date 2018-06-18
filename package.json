@@ -1,25 +1,13 @@
 {
-  "name": "transpilr-js",
+  "name": "transpilr",
   "version": "1.0.0",
   "description": "transpile, watch, bundle and minify new javascript versions (es6 and newer) to older version es5",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/**/*.spec.js"
   },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            "env"
-          ],
-          "sourceMap": true
-        }
-      ]
-    ]
-  },
   "keywords": [
+    "Javascript",
     "Transpile",
     "Transpiler",
     "es5",
@@ -27,19 +15,20 @@
     "es2015",
     "watch",
     "bundle",
-    "minify"
+    "minify",
+    "trnaspilr"
   ],
   "author": "Kerfalla Kourouma <kk_mat@hotmail.com>",
   "license": "ISC",
   "dependencies": {
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "babelify": "^8.0.0",
+    "babel-core": "6.26.3",
+    "babel-preset-env": "1.7.0",
+    "babelify": "8.0.0",
     "browsify": "0.0.4",
-    "shelljs": "^0.8.2",
-    "uglifyify": "^5.0.0",
-    "watchify": "^3.11.0",
-    "yargs": "^11.0.0"
+    "shelljs": "0.8.2",
+    "uglifyify": "5.0.0",
+    "watchify": "3.11.0",
+    "yargs": "11.0.0"
   },
   "bin": {
     "transpilr": "bin/cmd.js"
