@@ -7,6 +7,7 @@ const chai = require('chai');
 const mock = require('mock-fs');
 const sinon = require('sinon');
 const shell = require('shelljs');
+const path = require('path');
 var expect = chai.expect;
 
 describe('transpiler', () => {
@@ -58,27 +59,28 @@ describe('transpiler', () => {
                 let result = act();
                 mkdirStubs.restore();
 
+
                 let expectedEntries = [{
-                    sourceFiles: ['fake\\dir\\myJavascriptFile.js'],
-                    outputFile: 'dist\\myJavascriptFile.js',
+                    sourceFiles: [path.join('fake', 'dir','myJavascriptFile.js')],
+                    outputFile: path.join('dist','myJavascriptFile.js'),
                     minify: false,
                     watch: false
                 },
                 {
-                    sourceFiles: ['fake\\dir\\myJavascriptFile2.js'],
-                    outputFile: 'dist\\myJavascriptFile2.js',
+                    sourceFiles: [path.join('fake','dir','myJavascriptFile2.js')],
+                    outputFile: path.join('dist','myJavascriptFile2.js'),
                     minify: false,
                     watch: false
                 },
                 {
-                    sourceFiles: ['fake\\dir2\\myJavascriptFile4.js'],
-                    outputFile: 'dist\\myJavascriptFile4.js',
+                    sourceFiles: [path.join('fake','dir2','myJavascriptFile4.js')],
+                    outputFile: path.join('dist','myJavascriptFile4.js'),
                     minify: false,
                     watch: false
                 },
                 {
-                    sourceFiles: ['fake\\dir\\fakeSubDir\\myJavascriptFile3.js'],
-                    outputFile: 'dist\\myJavascriptFile3.js',
+                    sourceFiles: [path.join('fake','dir','fakeSubDir','myJavascriptFile3.js')],
+                    outputFile: path.join('dist','myJavascriptFile3.js'),
                     minify: false,
                     watch: false
                 }
@@ -110,8 +112,13 @@ describe('transpiler', () => {
                 let result = act();
                 mkdirStubs.restore();
 
+                var path1 = path.join('fake', 'dir','fakeSubDir','myJavascriptFile3.js');
+                var path2 = path.join('fake', 'dir','myJavascriptFile.js');
+                var path3 = path.join('fake', 'dir','myJavascriptFile2.js');
+                var path4 = path.join('fake', 'dir2','myJavascriptFile4.js');
+
                 let expectedEntries = [{
-                    sourceFiles: ['fake\\dir\\fakeSubDir\\myJavascriptFile3.js', 'fake\\dir\\myJavascriptFile.js', 'fake\\dir\\myJavascriptFile2.js', 'fake\\dir2\\myJavascriptFile4.js'],
+                    sourceFiles: [path1, path2, path3, path4],
                     outputFile: 'output.js',
                     minify: false,
                     watch: false
@@ -145,8 +152,8 @@ describe('transpiler', () => {
                 mkdirStubs.restore();
 
                 let expectedEntries = [{
-                    sourceFiles: ['fake\\dir2\\myJavascriptFile4.js'],
-                    outputFile: 'dist\\myJavascriptFile4.min.js',
+                    sourceFiles: [path.join('fake','dir2','myJavascriptFile4.js')],
+                    outputFile: path.join('dist','myJavascriptFile4.min.js'),
                     minify: true,
                     watch: true
                 }
@@ -179,14 +186,14 @@ describe('transpiler', () => {
                 mkdirStubs.restore();
 
                 let expectedEntries = [{
-                    sourceFiles: ['fake\\dir2\\myJavascriptFile4.js'],
-                    outputFile: 'dist\\myJavascriptFile4.js',
+                    sourceFiles: [path.join('fake','dir2','myJavascriptFile4.js')],
+                    outputFile: path.join('dist','myJavascriptFile4.js'),
                     minify: false,
                     watch: false
                 },
                 {
-                    sourceFiles: ['fake\\dir2\\myTestFile4.spec.js'],
-                    outputFile: 'dist\\myTestFile4.spec.js',
+                    sourceFiles: [path.join('fake','dir2','myTestFile4.spec.js')],
+                    outputFile: path.join('dist','myTestFile4.spec.js'),
                     minify: false,
                     watch: false
                 }
@@ -256,7 +263,7 @@ describe('transpiler', () => {
             transpiler.setAndExecuteBundlingEvent({watch: false, minify: false, outputFile: 'test.js'}, browserifyObject);
             transformStub.restore();
 
-            sinon.assert.notCalled(transformStub);
+            sinon.assert.neverCalledWith(transformStub, 'transform', 'uglifyify', { global: true });
         });
         it('should set up on update even given watch is true', ()=>{
             const browserifyObject = browserify({});
@@ -265,7 +272,7 @@ describe('transpiler', () => {
             transpiler.setAndExecuteBundlingEvent({watch: true, minify: false, outputFile: 'test.js'}, browserifyObject);
             onStub.restore();
 
-            sinon.assert.calledOnce(onStub);
+            sinon.assert.calledWith(onStub, 'update', sinon.match.any);
         });
         it('should not set up on update even given watch is false', ()=>{
             const browserifyObject = browserify({});
@@ -274,7 +281,7 @@ describe('transpiler', () => {
             transpiler.setAndExecuteBundlingEvent({watch: false, minify: false, outputFile: 'test.js'}, browserifyObject);
             onStub.restore();
 
-            sinon.assert.notCalled(onStub);
+            sinon.assert.neverCalledWith(onStub, 'update', sinon.match.any);
         });
         it('should call the callback given that browserifyObject has one', ()=>{
             const browserifyObject = browserify({});
@@ -316,6 +323,18 @@ describe('transpiler', () => {
                 packageCache: {},
                 plugin: []
             });
+        });
+    });
+
+    describe('setupBabelify', ()=>{
+        it('should call transform babelify', ()=>{
+            const browserifyObject = browserify({});
+            const transformStub = sinon.stub(browserifyObject, 'transform');
+
+            transpiler.setupBabelify(browserifyObject);
+            transformStub.restore();
+
+            sinon.assert.calledWith(transformStub, 'babelify', {presets: ["env"]});
         });
     });
 });

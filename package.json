@@ -1,6 +1,6 @@
 {
   "name": "transpilr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "transpile, watch, bundle and minify new javascript versions (es6 and newer) to older version es5",
   "main": "index.js",
   "scripts": {
@@ -22,6 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "babel-core": "6.26.3",
+    "babel-plugin-transform-decorators-legacy": "^1.3.5",
     "babel-preset-env": "1.7.0",
     "babelify": "8.0.0",
     "browsify": "0.0.4",

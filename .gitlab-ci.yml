@@ -1,0 +1,11 @@
+image: node:6.11.4
+
+stages:
+  - test
+
+run_all_tests:
+  stage: test
+  script:
+   - npm install
+   - npm install mocha -g
+   - mocha test/**/*.spec.js

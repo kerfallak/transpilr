@@ -4,6 +4,7 @@ const mock = require('mock-fs');
 const fs = require('fs');
 const shell = require('shelljs');
 const sinon = require('sinon');
+const path = require('path');
 
 describe('fileHelper', () => {
 
@@ -41,15 +42,15 @@ describe('fileHelper', () => {
         });
 
         it('should return array that contains myJavascriptFile2.js', () => {
-            expect(act()).toContain('path\\to\\fake\\dir\\myJavascriptFile2.js');
+            expect(act()).toContain(path.join('path','to','fake','dir','myJavascriptFile2.js'));
         });
 
         it('should return array that does not contains some-file.txt', () => {
-            expect(act()).not.toContain('path\\to\\fake\\dir\\some-file.txt');
+            expect(act()).not.toContain(path.join('path','to','fake','dir','some-file.txt'));
         });
 
         it('should return array that contains myTestFile.test.js from sub direcotry', () => {
-            expect(act()).toContain('path\\to\\fake\\dir\\fakeSubDir\\myTestFile.test.js');
+            expect(act()).toContain(path.join('path','to','fake','dir','fakeSubDir','myTestFile.test.js'));
         });
 
         it('should return empty array given non existing directory', () => {
@@ -119,7 +120,7 @@ describe('fileHelper', () => {
     describe('createFullOutPutFileName', () => {
         it('should return dist/file.js given dist and dir/files.js', () => {
             let result = fileHelper.createFullOutPutFileName('dist', 'dir/files.js');
-            expect(result).toBe('dist\\files.js');
+            expect(result).toBe(path.join('dist','files.js'));
         });
     });
 
@@ -132,10 +133,10 @@ describe('fileHelper', () => {
             expect(act().length).toBe(7);
         });
         it('should return an array that contains path/to/fake/dir/myJavascriptFile.js ', () => {
-            expect(act()).toContain('path\\to\\fake\\dir\\myJavascriptFile.js');
+            expect(act()).toContain(path.join('path','to','fake','dir','myJavascriptFile.js'));
         });
         it('should return an array that contains path/to/fake/dir2/myJavascriptFile4.js ', () => {
-            expect(act()).toContain('path\\to\\fake\\dir2\\myJavascriptFile4.js');
+            expect(act()).toContain(path.join('path','to','fake','dir2','myJavascriptFile4.js'));
         });
     });
 
